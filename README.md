@@ -1,2 +1,2 @@
 # wps
-A simple WordPress plugin for track website statistics 
+A simple WordPress plugin to track website statistics 
