@@ -1,2 +1,2 @@
 # wps
-A simple WordPress plugin for user statistics 
+A simple WordPress plugin for website statistics 
