@@ -1,16 +1,17 @@
 <?php
 /*
 Plugin Name: آمار بازدید کاربران وردپرس
-Plugin URI: http://7learn.com
+Plugin URI: http://yaransoft.com
 Description: پلاگینی ساده و قدرتمند برای دریافت آمار کاربران از وب سایت وردپرسی شما
-Author: Kaivan Alimohammadi
+Author: Ghafor Sabury
 Version: 1.0.0
-Author URI:  http://7learn.com
+Author URI:  http://yaransoft.com
 */
 
+// Prevent Direct Access
 defined('ABSPATH') || exit('NO ACCESS');
 
-// define constants for wps
+// Define constants for wps
 define('WPS_DIR', trailingslashit(plugin_dir_path(__FILE__)));
 define('WPS_URL', trailingslashit(plugin_dir_url(__FILE__)));
 define('WPS_INC', trailingslashit(WPS_DIR . 'inc'));
@@ -18,9 +19,9 @@ define('WPS_TPL', trailingslashit(WPS_DIR . 'tpl'));
 define('WPS_CSS', trailingslashit(WPS_URL . 'assets' . '/' . 'css'));
 define('WPS_JS', trailingslashit(WPS_URL . 'assets' . '/' . 'js'));
 define('WPS_IMAGES', trailingslashit(WPS_URL . 'assets' . '/' . 'images'));
+define('WPS_DB_VERSION', 1);
 
-
-// write activation && deactivation hook'callback
+// Add week to wp schedule event
 add_filter('cron_schedules', 'wps_add_weekly_cron_schedule');
 function wps_add_weekly_cron_schedule($schedules)
 {
@@ -32,11 +33,14 @@ function wps_add_weekly_cron_schedule($schedules)
     return $schedules;
 }
 
+// write activation && deactivation hook'callback
 function wps_activate()
 {
     if (! wp_next_scheduled('wps_notify')) {
         wp_schedule_event(strtotime(date('Y-m-d 22:00:00')), 'weekly', 'wps_notify');
     }
+
+    include WPS_DIR . 'upgrade.php';
 }
 
 function wps_deactivate()

@@ -1,33 +1,36 @@
 <!doctype html>
 <html lang="fa">
+
 <head>
     <meta charset="UTF-8">
     <title>ایمیل اطلاع رسانی وب سایت</title>
 </head>
 <style>
-
-    body{
+    body {
         background: #f9f9f9;
-        margin:0;
+        margin: 0;
         padding: 0;
-        font-size:100%;
-        font-family:Tahoma;
+        font-size: 100%;
+        font-family: Tahoma;
         direction: rtl;
     }
-    .wrapper{
+
+    .wrapper {
         width: 90%;
         background: #FFFFFF;
         margin: 20px auto;
-        border:1px solid #eaeaea;
-        -webkit-border-radius:5px;
-        -moz-border-radius:5px;
-        border-radius:5px;
+        border: 1px solid #eaeaea;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
         text-align: center;
     }
-    .content{
+
+    .content {
         margin: 20px;
     }
 </style>
+
 <body>
     <div class="wrapper">
         <p>گزارش بازدید روزانه از وب سایت</p>
@@ -41,7 +44,9 @@
                 <span>#uniqueVisits#</span>
             </p>
         </div>
-        <?php //$email_content = get_option('wps_daily_report_email'); ?>
+        <?php //$email_content = get_option('wps_daily_report_email'); 
+        ?>
     </div>
 </body>
+
 </html>

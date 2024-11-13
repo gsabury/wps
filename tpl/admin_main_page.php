@@ -28,12 +28,12 @@
                                     <span><?php echo $todayStatitics->unique_visits; ?></span>
                                 </p>
                                 <p>
-                                    <span>بازدید کل دیروز :  </span>
-                                    <span><?php echo intval( $yesterdayStatitics->total_visits ); ?></span>
+                                    <span>بازدید کل دیروز : </span>
+                                    <span><?php echo isset($yesterdayStatitics->total_visits) ? intval($yesterdayStatitics->total_visits) : 0; ?></span>
                                 </p>
                                 <p>
                                     <span>بازدید یکتای دیروز : </span>
-                                    <span><?php echo intval( $yesterdayStatitics->unique_visits ); ?></span>
+                                    <span><?php echo isset($yesterdayStatitics->unique_visits) ? intval($yesterdayStatitics->unique_visits) : 0; ?></span>
                                 </p>
                             </div>
                         </div>
@@ -64,32 +64,31 @@
                                         type: 'line',
                                         data: {
                                             labels: <?php echo json_encode($visitsDates); ?>,
-                                            datasets: [
+                                            datasets: [{
+                                                    label: 'بازدید کل',
+                                                    backgroundColor: "rgba(68,214,237,0.2)",
+                                                    borderColor: "rgba(14,187,214,1)",
+                                                    borderWidth: 1,
+                                                    hoverBackgroundColor: "rgba(68,214,237,0.4)",
+                                                    hoverBorderColor: "rgba(14,187,214,1)",
+                                                    data: <?php echo json_encode($totalVisits); ?>
+                                                },
                                                 {
-                                                label: 'بازدید کل',
-                                                backgroundColor: "rgba(68,214,237,0.2)",
-                                                borderColor: "rgba(14,187,214,1)",
-                                                borderWidth: 1,
-                                                hoverBackgroundColor: "rgba(68,214,237,0.4)",
-                                                hoverBorderColor: "rgba(14,187,214,1)",
-                                                data: <?php echo json_encode($totalVisits); ?>
-                                            },
-                                            {
-                                                label: 'بازدید unique',
+                                                    label: 'بازدید unique',
                                                     backgroundColor: "rgba(199 ,239 ,153,0.2)",
-                                                borderColor: "#72d384",
-                                                borderWidth: 1,
-                                                hoverBackgroundColor: "rgba(68,214,237,0.4)",
-                                                hoverBorderColor: "rgba(14,187,214,1)",
-                                                data: <?php echo json_encode($uniqueVisits); ?>
-                                            }
+                                                    borderColor: "#72d384",
+                                                    borderWidth: 1,
+                                                    hoverBackgroundColor: "rgba(68,214,237,0.4)",
+                                                    hoverBorderColor: "rgba(14,187,214,1)",
+                                                    data: <?php echo json_encode($uniqueVisits); ?>
+                                                }
                                             ]
                                         },
                                         options: {
                                             scales: {
                                                 yAxes: [{
                                                     ticks: {
-                                                        beginAtZero:true
+                                                        beginAtZero: true
                                                     }
                                                 }]
                                             }

@@ -8,7 +8,7 @@
                 type="checkbox"
                 id="wps_enable"
                 name="wps_enable"
-                <?php checked(1,$wps_enable_value); ?>>
+                <?php checked(1, $wps_enable_value); ?>>
         </td>
     </tr>
     <tr valign="top">
@@ -29,7 +29,7 @@
         </th>
         <td>
             <input
-                type="email"
+                type="text"
                 name="wps_admin_mobile"
                 id="wps_admin_mobile"
                 value="<?php echo $wps_admin_mobile; ?>">

@@ -7,18 +7,16 @@ function wps_admin_menu()
     $totalStatistics = $wpdb->get_row("SELECT SUM(total_visits) as total_visits,
                                            SUM(unique_visits) as total_unique_visits
                                     FROM {$table_prefix}wps_visits");
+
     $todayStatitics = $wpdb->get_row("SELECT total_visits,
                                            unique_visits
                                     FROM {$table_prefix}wps_visits
                                     WHERE date = '{$today}'");
-    //var_dump( $todayStatitics );
     //yesterday stat
     $yesterdayStatitics = $wpdb->get_row("SELECT total_visits,
                                            unique_visits
                                     FROM {$table_prefix}wps_visits
                                     WHERE date = DATE_SUB('{$today}',INTERVAL 1 DAY)");
-    //var_dump( $yesterdayStatitics );
-    //echo $wpdb->last_query;
     $where = " WHERE 1 ";
     if (isset($_GET['startDate']) && !empty($_GET['startDate']) && isset($_GET['endDate']) && !empty($_GET['endDate'])) {
         $startDate = wpsConvertToGregorian(esc_sql($_GET['startDate']));
@@ -28,7 +26,8 @@ function wps_admin_menu()
 
     $visitsChartData = $wpdb->get_results("select `date`,total_visits,unique_visits
                                                          from {$table_prefix}wps_visits{$where}");
-    var_dump($wpdb->last_query);
+    // var_dump($wpdb->last_query);
+
     $visitsDates = [];
     $totalVisits = [];
     $uniqueVisits = [];
@@ -41,7 +40,6 @@ function wps_admin_menu()
     include  WPS_TPL . "admin_main_page.php";
 }
 
-
 function wps_admin_menu_settings()
 {
     $tabs = array(
@@ -49,27 +47,27 @@ function wps_admin_menu_settings()
         'messages' => 'اطلاع رسانی',
         'about'   => 'درباره ما'
     );
+
     $currentTab = isset($_GET['tab']) ? $_GET['tab'] : 'general';
 
     if (isset($_POST['submit'])) {
         $wps_enable = isset($_POST['wps_enable']) ? 1 : 0;
         update_option('wps_enable', $wps_enable);
 
-        // update admin email setting for wps plugin
         !empty($_POST['wps_admin_email'])
             && filter_var($_POST['wps_admin_email'], FILTER_VALIDATE_EMAIL) ?
             update_option('wps_admin_email', esc_sql($_POST['wps_admin_email'])) : null;
 
         !empty($_POST['wps_admin_mobile']) ?
             update_option('wps_admin_mobile', esc_sql($_POST['wps_admin_mobile'])) : null;
-
+       
         isset($_POST['wps_daily_report_sms']) && !empty($_POST['wps_daily_report_sms']) ?
             update_option('wps_daily_report_sms', strip_tags($_POST['wps_daily_report_sms'])) : null;
 
         isset($_POST['wps_daily_report_email']) && !empty($_POST['wps_daily_report_email']) ?
             update_option('wps_daily_report_email', strip_tags($_POST['wps_daily_report_email'])) : null;
     }
-
+    
     $wps_enable_value = intval(get_option('wps_enable'));
     $wps_admin_email = get_option('wps_admin_email');
     $wps_admin_mobile = get_option('wps_admin_mobile');
@@ -140,9 +138,7 @@ function wpsConvertToPersian(&$date)
     !function_exists('gregorian_to_jalali') ? include WPS_INC . 'jdf.php' : null;
     $persianDate = gregorian_to_jalali($dateArray[0], $dateArray[1], $dateArray[2]);
     $date = implode('/', $persianDate);
-    // return implode('/',$persianDate);
 }
-
 
 function wpsConvertToGregorian($date)
 {
@@ -152,7 +148,7 @@ function wpsConvertToGregorian($date)
     return implode('-', $newDate);
 }
 
-
+// Deined for debug
 if (!function_exists('dd')) {
     function dd($data)
     {
@@ -164,18 +160,15 @@ if (!function_exists('dd')) {
     }
 }
 
-// hooks
+// hooks which send SMS and Email
 add_action('wps_notify', 'wps_notify_callback');
 function wps_notify_callback()
 {
     global $wpdb, $table_prefix;
-
     $wps_admin_email = get_option('wps_admin_email');
     $wps_admin_mobile = get_option('wps_admin_mobile');
-
     $today = date("Y-m-d");
     $wps_daily_report_sms = get_option('wps_daily_report_sms');
-    
     $todayStatitics = $wpdb->get_row("SELECT total_visits,
                                            unique_visits
                                     FROM {$table_prefix}wps_visits
@@ -184,12 +177,10 @@ function wps_notify_callback()
         '#totalVisits#',
         '#uniqueVisits#'
     );
-
     $values = array(
         $todayStatitics->total_visits,
         $todayStatitics->unique_visits
     );
-
     $wps_daily_report_sms = str_replace($tags, $values, $wps_daily_report_sms);
 
     ob_start();
@@ -202,7 +193,6 @@ function wps_notify_callback()
         'to' => $wps_admin_mobile,
         'msg' => $wps_daily_report_sms
     ));
-    
     wps_send_email(array(
         'to' => $wps_admin_email,
         'subject' => 'گزارش بازدید روزانه از وب سایت',
@@ -210,6 +200,7 @@ function wps_notify_callback()
     ));
 }
 
+// Send Email
 function wps_send_email($params = array())
 {
     // $headers[] = 'From: 7learn.com <info@7learn.com>';
@@ -218,9 +209,9 @@ function wps_send_email($params = array())
     wp_mail($params['to'], $params['subject'], $params['message'], $headers);
 }
 
+// Send SMS
 function wps_send_sms($params = array())
 {
-
     !class_exists('farapayamak') ? require_once WPS_INC . 'farapayamak.class.php' : null;
     $fp = new farapayamak();
     $fp->user = "5689452";
